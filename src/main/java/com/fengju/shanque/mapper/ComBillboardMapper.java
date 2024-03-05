@@ -5,5 +5,5 @@ import com.fengju.shanque.model.entity.ComBillboard;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ComBillboardMappper extends BaseMapper<ComBillboard> {
+public interface ComBillboardMapper extends BaseMapper<ComBillboard> {
 }

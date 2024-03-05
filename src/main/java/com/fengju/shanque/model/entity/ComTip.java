@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-@TableName("bms_tip")
+@TableName("com_tip")
 public class ComTip implements Serializable {
 
     private static final long serialVersionUID = 1L;
