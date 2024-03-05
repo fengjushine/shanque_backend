@@ -3,17 +3,23 @@ package com.fengju.shanque.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fengju.shanque.common.exception.ApiAsserts;
+import com.fengju.shanque.jwt.JwtUtil;
 import com.fengju.shanque.mapper.ComUserMapper;
+import com.fengju.shanque.model.dto.LoginDTO;
 import com.fengju.shanque.model.dto.RegisterDTO;
 import com.fengju.shanque.model.entity.ComUser;
 import com.fengju.shanque.service.ComUserService;
 import com.fengju.shanque.utils.MD5Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
 
+@Slf4j
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class ComUserServiceImpl extends ServiceImpl<ComUserMapper, ComUser> implements ComUserService {
     @Override
     public ComUser executeRegister(RegisterDTO dto) {
@@ -36,5 +42,27 @@ public class ComUserServiceImpl extends ServiceImpl<ComUserMapper, ComUser> impl
         baseMapper.insert(addUser);
 
         return addUser;
+    }
+
+    @Override
+    public ComUser getUserByUsername(String username) {
+        return baseMapper.selectOne(new LambdaQueryWrapper<ComUser>().eq(ComUser::getUsername, username));
+    }
+
+    @Override
+    public String executeLogin(LoginDTO dto) {
+        String token = null;
+        try {
+            ComUser user = getUserByUsername(dto.getUsername());
+            String encodePwd = MD5Utils.getPwd(dto.getPassword());
+            if(!encodePwd.equals(user.getPassword()))
+            {
+                throw new Exception("密码错误");
+            }
+            token = JwtUtil.generateToken(String.valueOf(user.getUsername()));
+        } catch (Exception e) {
+            log.warn("用户不存在or密码验证失败=======>{}", dto.getUsername());
+        }
+        return token;
     }
 }
