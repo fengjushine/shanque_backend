@@ -25,4 +25,5 @@ public interface ComUserService extends IService<ComUser> {
      * @return 生成的JWT的token
      */
     String executeLogin(LoginDTO dto);
+
 }

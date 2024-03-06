@@ -6,15 +6,14 @@ import com.fengju.shanque.model.dto.RegisterDTO;
 import com.fengju.shanque.model.entity.ComUser;
 import com.fengju.shanque.service.ComUserService;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.fengju.shanque.jwt.JwtUtil.USER_NAME;
 
 @RestController
 @RequestMapping("/user")
@@ -52,5 +51,16 @@ public class ComUserController {
         map.put("token", token);
         return ApiResult.success(map, "登录成功");
     }
+
+    /*
+    * 获取用户信息
+    * */
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    public ApiResult<ComUser> getUser(@RequestHeader(value = USER_NAME) String userName) {
+        ComUser user = comUserService.getUserByUsername(userName);
+        return ApiResult.success(user);
+    }
+
+
 
 }
