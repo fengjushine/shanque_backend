@@ -61,6 +61,12 @@ public class ComUserController {
         return ApiResult.success(user);
     }
 
-
+    /*
+    * 用户退出登录
+    * */
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public ApiResult<Object> logOut() {
+        return ApiResult.success(null, "退出成功");
+    }
 
 }
