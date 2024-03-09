@@ -1,6 +1,7 @@
 package com.fengju.shanque.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fengju.shanque.model.entity.ComTag;
 import com.fengju.shanque.model.entity.ComTopicTag;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface ComTopicTagService extends IService<ComTopicTag> {
      * @return
      */
     List<ComTopicTag> selectByTopicId(String topicId);
+
+    void createTopicTag(String id, List<ComTag> tags);
 }
