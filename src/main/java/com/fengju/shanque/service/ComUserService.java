@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.fengju.shanque.model.dto.LoginDTO;
 import com.fengju.shanque.model.dto.RegisterDTO;
 import com.fengju.shanque.model.entity.ComUser;
+import com.fengju.shanque.model.vo.ProfileVO;
 
 public interface ComUserService extends IService<ComUser> {
 
@@ -26,4 +27,5 @@ public interface ComUserService extends IService<ComUser> {
      */
     String executeLogin(LoginDTO dto);
 
+    ProfileVO getUserProfile(String userId);
 }

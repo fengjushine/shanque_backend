@@ -4,13 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fengju.shanque.common.exception.ApiAsserts;
 import com.fengju.shanque.jwt.JwtUtil;
+import com.fengju.shanque.mapper.ComFollowMapper;
+import com.fengju.shanque.mapper.ComTopicMapper;
 import com.fengju.shanque.mapper.ComUserMapper;
 import com.fengju.shanque.model.dto.LoginDTO;
 import com.fengju.shanque.model.dto.RegisterDTO;
+import com.fengju.shanque.model.entity.ComFollow;
+import com.fengju.shanque.model.entity.ComPost;
 import com.fengju.shanque.model.entity.ComUser;
+import com.fengju.shanque.model.vo.ProfileVO;
 import com.fengju.shanque.service.ComUserService;
 import com.fengju.shanque.utils.MD5Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -21,6 +28,13 @@ import java.util.Date;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class ComUserServiceImpl extends ServiceImpl<ComUserMapper, ComUser> implements ComUserService {
+
+    @Autowired
+    private ComTopicMapper comTopicMapper;
+
+    @Autowired
+    private ComFollowMapper comFollowMapper;
+
     @Override
     public ComUser executeRegister(RegisterDTO dto) {
         //查询是否有相同用户名的用户
@@ -64,5 +78,20 @@ public class ComUserServiceImpl extends ServiceImpl<ComUserMapper, ComUser> impl
             log.warn("用户不存在or密码验证失败=======>{}", dto.getUsername());
         }
         return token;
+    }
+
+    @Override
+    public ProfileVO getUserProfile(String userId) {
+        ProfileVO profile = new ProfileVO();
+        ComUser user = baseMapper.selectById(userId);
+        BeanUtils.copyProperties(user, profile);
+        //用户文章数
+        int count = comTopicMapper.selectCount(new LambdaQueryWrapper<ComPost>().eq(ComPost::getUserId, userId));
+        profile.setTopicCount(count);
+
+        //粉丝数
+        int followers = comFollowMapper.selectCount(new LambdaQueryWrapper<ComFollow>().eq(ComFollow::getParentId, userId));
+        profile.setFollowerCount(followers);
+        return profile;
     }
 }

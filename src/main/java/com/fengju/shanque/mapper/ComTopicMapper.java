@@ -7,6 +7,8 @@ import com.fengju.shanque.model.vo.PostVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ComTopicMapper extends BaseMapper<ComPost> {
     /**
@@ -18,4 +20,6 @@ public interface ComTopicMapper extends BaseMapper<ComPost> {
      * @return
      */
     Page<PostVO> selectListAndPage(@Param("page") Page<PostVO> page, @Param("tab") String tab);
+
+    List<ComPost> selectRecommend(String id);
 }

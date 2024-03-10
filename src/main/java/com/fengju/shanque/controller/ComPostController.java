@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
+import java.util.List;
+import java.util.Map;
+
 import static com.fengju.shanque.jwt.JwtUtil.USER_NAME;
 
 @RestController
@@ -47,5 +50,22 @@ public class ComPostController extends BaseController {
         return ApiResult.success(topic);
     }
 
+    /*
+    * 帖子详情展示
+    * */
+    @GetMapping()
+    public ApiResult<Map<String, Object>> view(@RequestParam("id") String id) {
+        Map<String, Object> map = comPostService.viewTopic(id);
+        return ApiResult.success(map);
+    }
+
+    /*
+    * 推荐帖子
+    * */
+    @GetMapping("/recommend")
+    public ApiResult<List<ComPost>> getRecommend(@RequestParam("topicId") String id) {
+        List<ComPost> topics = comPostService.getRecommend(id);
+        return ApiResult.success(topics);
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.fengju.shanque.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fengju.shanque.mapper.ComTopicMapper;
@@ -12,9 +13,11 @@ import com.fengju.shanque.model.entity.ComTag;
 import com.fengju.shanque.model.entity.ComTopicTag;
 import com.fengju.shanque.model.entity.ComUser;
 import com.fengju.shanque.model.vo.PostVO;
+import com.fengju.shanque.model.vo.ProfileVO;
 import com.fengju.shanque.service.ComPostService;
 import com.fengju.shanque.service.ComTagService;
 import com.fengju.shanque.service.ComTopicTagService;
+import com.fengju.shanque.service.ComUserService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +28,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,9 @@ public class ComPostServiceImpl extends ServiceImpl<ComTopicMapper, ComPost> imp
     @Autowired
     @Lazy
     private ComTagService comTagService;
+
+    @Autowired
+    private ComUserService comUserService;
 
     @Override
     public Page<PostVO> getList(Page<PostVO> page, String tab) {
@@ -84,6 +88,40 @@ public class ComPostServiceImpl extends ServiceImpl<ComTopicMapper, ComPost> imp
         }
 
         return topic;
+    }
+
+    @Override
+    public Map<String, Object> viewTopic(String id) {
+        Map<String, Object> map = new HashMap<>(16);
+        ComPost topic = this.baseMapper.selectById(id);
+        System.out.println(topic);
+        Assert.notNull(topic, "话题不存在，或已被作者删除");
+        //帖子浏览数加一
+        topic.setView(topic.getView() + 1);
+        this.baseMapper.updateById(topic);
+        //emoji转码
+        topic.setContent(EmojiParser.parseToUnicode(topic.getContent()));
+        map.put("topic", topic);
+        //获取标签id
+        LambdaQueryWrapper<ComTopicTag> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ComTopicTag::getTopicId, id);
+        Set<String> set = new HashSet<>();
+        for (ComTopicTag comTopicTag : comTopicTagService.list(lambdaQueryWrapper)) {
+            set.add(comTopicTag.getTagId());
+        }
+        //获取标签集合
+        List<ComTag> comTags = comTagService.listByIds(set);
+        map.put("tags", comTags);
+
+        //作者
+        ProfileVO user = comUserService.getUserProfile(topic.getUserId());
+        map.put("user", user);
+        return map;
+    }
+
+    @Override
+    public List<ComPost> getRecommend(String id) {
+        return this.baseMapper.selectRecommend(id);
     }
 
     private void setTopicTags(Page<PostVO> iPage) {

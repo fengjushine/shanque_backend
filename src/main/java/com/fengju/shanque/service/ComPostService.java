@@ -7,6 +7,9 @@ import com.fengju.shanque.model.entity.ComPost;
 import com.fengju.shanque.model.entity.ComUser;
 import com.fengju.shanque.model.vo.PostVO;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ComPostService extends IService<ComPost> {
     /**
      * 获取首页话题列表
@@ -21,4 +24,8 @@ public interface ComPostService extends IService<ComPost> {
     * 新建帖子
     * */
     ComPost create(CreateTopicDTO dto, ComUser user);
+
+    Map<String, Object> viewTopic(String id);
+
+    List<ComPost> getRecommend(String id);
 }
