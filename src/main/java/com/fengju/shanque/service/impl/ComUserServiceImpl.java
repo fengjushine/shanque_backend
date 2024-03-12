@@ -40,8 +40,8 @@ public class ComUserServiceImpl extends ServiceImpl<ComUserMapper, ComUser> impl
         //查询是否有相同用户名的用户
         LambdaQueryWrapper<ComUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ComUser::getUsername, dto.getName()).or().eq(ComUser::getEmail, dto.getEmail());
-        ComUser umsUser = baseMapper.selectOne(wrapper);
-        if (!ObjectUtils.isEmpty(umsUser)) {
+        ComUser comUser = baseMapper.selectOne(wrapper);
+        if (!ObjectUtils.isEmpty(comUser)) {
             ApiAsserts.fail("账号或邮箱已存在！");
         }
         //builder()方法可以链式的为对象赋值

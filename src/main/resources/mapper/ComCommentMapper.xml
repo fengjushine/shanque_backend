@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fengju.shanque.mapper.ComCommentMapper">
+    <resultMap id="topicVO" type="com.fengju.shanque.model.vo.CommentVO">
+        <id column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="user_id" property="userId"/>
+        <result column="topic_id" property="topicId"/>
+        <result column="username" property="username"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="getCommentsByTopicID" resultMap="topicVO">
+        select com_comment.*,com_user.username
+        from com_comment
+        join com_user on com_user.id = com_comment.user_id
+        where topic_id = #{topicid}
+        order by create_time desc
+    </select>
+</mapper>

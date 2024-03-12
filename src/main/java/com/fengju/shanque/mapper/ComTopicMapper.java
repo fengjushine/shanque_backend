@@ -21,5 +21,10 @@ public interface ComTopicMapper extends BaseMapper<ComPost> {
      */
     Page<PostVO> selectListAndPage(@Param("page") Page<PostVO> page, @Param("tab") String tab);
 
-    List<ComPost> selectRecommend(String id);
+    List<ComPost> selectRecommend(@Param("id") String id);
+
+    /*
+    * 全文检索
+    * */
+    Page<PostVO> searchByKey(@Param("page") Page<PostVO> page, @Param("keyword") String keyword);
 }

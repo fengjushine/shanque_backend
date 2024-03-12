@@ -1,7 +1,6 @@
 package com.fengju.shanque.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fengju.shanque.mapper.ComTopicMapper;
@@ -122,6 +121,15 @@ public class ComPostServiceImpl extends ServiceImpl<ComTopicMapper, ComPost> imp
     @Override
     public List<ComPost> getRecommend(String id) {
         return this.baseMapper.selectRecommend(id);
+    }
+
+    @Override
+    public Page<PostVO> searchByKey(String keyword, Page<PostVO> page) {
+        //查询话题
+        Page<PostVO> iPage = this.baseMapper.searchByKey(page, keyword);
+        //设置话题的标签
+        setTopicTags(iPage);
+        return iPage;
     }
 
     private void setTopicTags(Page<PostVO> iPage) {

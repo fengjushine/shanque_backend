@@ -8,10 +8,14 @@ import com.fengju.shanque.model.entity.ComUser;
 import com.fengju.shanque.model.vo.PostVO;
 import com.fengju.shanque.service.ComPostService;
 import com.fengju.shanque.service.ComUserService;
+import com.vdurmont.emoji.EmojiParser;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +70,32 @@ public class ComPostController extends BaseController {
     public ApiResult<List<ComPost>> getRecommend(@RequestParam("topicId") String id) {
         List<ComPost> topics = comPostService.getRecommend(id);
         return ApiResult.success(topics);
+    }
+
+    /*
+    * 修改帖子
+    * */
+    @PostMapping("/update")
+    public ApiResult<ComPost> update(@RequestHeader(value = USER_NAME) String userName, @Valid @RequestBody ComPost post) {
+        ComUser comUser = comUserService.getUserByUsername(userName);
+        Assert.isTrue(comUser.getId().equals(post.getUserId()), "非本人无权修改");
+        post.setModifyTime(new Date());
+        post.setContent(EmojiParser.parseToUnicode(post.getContent()));
+        comPostService.updateById(post);
+        return ApiResult.success(post);
+    }
+
+    /*
+    * 删除帖子
+    * */
+    @DeleteMapping("/delete/{id}")
+    public ApiResult<String> delete(@RequestHeader(value = USER_NAME) String userName, @PathVariable("id") String id) {
+        ComUser comUser = comUserService.getUserByUsername(userName);
+        ComPost comPost = comPostService.getById(id);
+        Assert.notNull(comPost, "话题已被删除");
+        Assert.isTrue(comPost.getUserId().equals(comUser.getId()), "非本人无权删除");
+        comPostService.removeById(id);
+        return ApiResult.success(null, "删除成功");
     }
 
 }

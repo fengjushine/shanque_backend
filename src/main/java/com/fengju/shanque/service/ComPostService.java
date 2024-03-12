@@ -28,4 +28,6 @@ public interface ComPostService extends IService<ComPost> {
     Map<String, Object> viewTopic(String id);
 
     List<ComPost> getRecommend(String id);
+
+    Page<PostVO> searchByKey(String keyword, Page<PostVO> page);
 }
