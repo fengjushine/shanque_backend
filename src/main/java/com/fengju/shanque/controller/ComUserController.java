@@ -48,7 +48,7 @@ public class ComUserController {
     * 账号登录
     * */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ApiResult<Map<String, String>> login(@Valid @RequestBody LoginDTO dto) {
+    public ApiResult<Map<String, String>> login(@Valid @RequestBody LoginDTO dto) throws InterruptedException {
         //若登录成功生成token
         String token = comUserService.executeLogin(dto);
         //若token为空
@@ -57,6 +57,7 @@ public class ComUserController {
         }
         Map<String, String> map = new HashMap<>(16);
         map.put("token", token);
+        Thread.sleep(100000);
         return ApiResult.success(map, "登录成功");
     }
 

@@ -93,7 +93,6 @@ public class ComPostServiceImpl extends ServiceImpl<ComTopicMapper, ComPost> imp
     public Map<String, Object> viewTopic(String id) {
         Map<String, Object> map = new HashMap<>(16);
         ComPost topic = this.baseMapper.selectById(id);
-        System.out.println(topic);
         Assert.notNull(topic, "话题不存在，或已被作者删除");
         //帖子浏览数加一
         topic.setView(topic.getView() + 1);
@@ -129,6 +128,7 @@ public class ComPostServiceImpl extends ServiceImpl<ComTopicMapper, ComPost> imp
         Page<PostVO> iPage = this.baseMapper.searchByKey(page, keyword);
         //设置话题的标签
         setTopicTags(iPage);
+
         return iPage;
     }
 
