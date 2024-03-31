@@ -33,6 +33,7 @@ public class ComCommentController extends BaseController {
     /*
     * 获取评论
     * */
+
     @GetMapping("/get_comments")
     public ApiResult<List<CommentVO>> getCommentsByTopicID(@RequestParam(value = "topicid", defaultValue = "1") String topicid) {
         List<CommentVO> list = comCommentService.getCommentByTopicID(topicid);
@@ -51,8 +52,10 @@ public class ComCommentController extends BaseController {
     /*
     * 添加评论
     * */
+
     @PostMapping("/add_comment")
-    public ApiResult<ComComment> add_comment(@RequestHeader(value = USER_NAME) String userName, @RequestBody CommentDTO dto) {
+    public ApiResult<ComComment> add_comment(@RequestHeader(value = USER_NAME) String userName
+            , @RequestBody CommentDTO dto) {
         ComUser user = comUserService.getUserByUsername(userName);
         ComComment comComment = comCommentService.create(dto, user);
         //获取帖子

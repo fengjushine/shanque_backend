@@ -46,7 +46,8 @@ public class ComPostController extends BaseController {
     * 发表帖子
     * */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ApiResult<ComPost> create(@RequestHeader(value = USER_NAME) String userName, @RequestBody CreateTopicDTO dto) {
+    public ApiResult<ComPost> create(@RequestHeader(value = USER_NAME) String userName
+            , @RequestBody CreateTopicDTO dto) {
         //根据用户名查找用户
         ComUser user = comUserService.getUserByUsername(userName);
         //创建帖子
@@ -76,7 +77,8 @@ public class ComPostController extends BaseController {
     * 修改帖子
     * */
     @PostMapping("/update")
-    public ApiResult<ComPost> update(@RequestHeader(value = USER_NAME) String userName, @Valid @RequestBody ComPost post) {
+    public ApiResult<ComPost> update(@RequestHeader(value = USER_NAME) String userName
+            , @Valid @RequestBody ComPost post) {
         ComUser comUser = comUserService.getUserByUsername(userName);
         Assert.isTrue(comUser.getId().equals(post.getUserId()), "非本人无权修改");
         post.setModifyTime(new Date());
@@ -89,7 +91,8 @@ public class ComPostController extends BaseController {
     * 删除帖子
     * */
     @DeleteMapping("/delete/{id}")
-    public ApiResult<String> delete(@RequestHeader(value = USER_NAME) String userName, @PathVariable("id") String id) {
+    public ApiResult<String> delete(@RequestHeader(value = USER_NAME) String userName
+            , @PathVariable("id") String id) {
         ComUser comUser = comUserService.getUserByUsername(userName);
         ComPost comPost = comPostService.getById(id);
         Assert.notNull(comPost, "话题已被删除");

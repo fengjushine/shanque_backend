@@ -21,6 +21,7 @@ public class ComBillboardController extends BaseController {
     LambdaQueryWrapper<ComBillboard> wrapper = new LambdaQueryWrapper<ComBillboard>();
 
     //查询show为1的最后一条公告
+
     @GetMapping("/show")
     public ApiResult<ComBillboard> getNotices() {
         List<ComBillboard> list = comBillboardService.list(wrapper.eq(ComBillboard::isShow, true));

@@ -32,7 +32,8 @@ public class ComRelationshipController {
             , @PathVariable("userId") String parentId) {
         ComUser comUser = comUserService.getUserByUsername(userName);
         if (parentId.equals(comUser.getId())) {
-            ApiAsserts.fail("不可关注自己");
+            //ApiAsserts.fail("不可关注自己");
+            return ApiResult.failed("不可关注自己");
         }
         ComFollow one = comFollowService.getOne(
                 new LambdaQueryWrapper<ComFollow>()

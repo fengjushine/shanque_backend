@@ -48,7 +48,7 @@ public class ComUserController {
     * 账号登录
     * */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ApiResult<Map<String, String>> login(@Valid @RequestBody LoginDTO dto) throws InterruptedException {
+    public ApiResult<Map<String, String>> login(@Valid @RequestBody LoginDTO dto) {
         //若登录成功生成token
         String token = comUserService.executeLogin(dto);
         //若token为空
@@ -57,7 +57,6 @@ public class ComUserController {
         }
         Map<String, String> map = new HashMap<>(16);
         map.put("token", token);
-        Thread.sleep(100000);
         return ApiResult.success(map, "登录成功");
     }
 
@@ -82,12 +81,14 @@ public class ComUserController {
     * 获取用户信息
     * */
     @GetMapping("/{username}")
-    public ApiResult<Map<String, Object>> getUserByName(@PathVariable("username") String username,
-                                                        @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo,
-                                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
+    public ApiResult<Map<String, Object>> getUserByName(@PathVariable("username") String username
+            , @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo
+            , @RequestParam(value = "size", defaultValue = "10") Integer size) {
         Map<String, Object> map = new HashMap<>(16);
+        //获取用户信息
         ComUser user = comUserService.getUserByUsername(username);
         Assert.notNull(user, "用户不存在");
+        //获取用户已发布的话题
         Page<ComPost> page = comPostService.page(new Page<>(pageNo, size),
                 new LambdaQueryWrapper<ComPost>().eq(ComPost::getUserId, user.getId()));
         map.put("user", user);

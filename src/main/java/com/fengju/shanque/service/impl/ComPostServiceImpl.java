@@ -134,9 +134,12 @@ public class ComPostServiceImpl extends ServiceImpl<ComTopicMapper, ComPost> imp
 
     private void setTopicTags(Page<PostVO> iPage) {
         iPage.getRecords().forEach(topic -> {
+            //根据话题id获取 话题-标签 对象集合
             List<ComTopicTag> topicTags = comTopicTagService.selectByTopicId(topic.getId());
             if (!topicTags.isEmpty()) {
+                //从 话题-标签 对象集合获取标签id集合
                 List<String> tagIds = topicTags.stream().map(ComTopicTag::getTagId).collect(Collectors.toList());
+                //根据标签id集合获取标签集合
                 List<ComTag> tags = comTagMapper.selectBatchIds(tagIds);
                 topic.setTags(tags);
             }
