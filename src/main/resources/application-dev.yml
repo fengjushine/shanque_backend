@@ -4,6 +4,9 @@ server:
 web:
   domain: http://localhost
 
+shanque:
+  uploadPath: D:/shanque_community_project/uploadPath/
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

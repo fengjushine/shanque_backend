@@ -20,7 +20,9 @@ import com.fengju.shanque.service.ComUserService;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -54,6 +56,9 @@ public class ComPostServiceImpl extends ServiceImpl<ComTopicMapper, ComPost> imp
     public Page<PostVO> getList(Page<PostVO> page, String tab) {
         //查询话题，得到iPage对象
         Page<PostVO> iPage = this.baseMapper.selectListAndPage(page, tab);
+        for (PostVO postVO : iPage.getRecords()) {
+            postVO.setAvatar("/uploadPath/avatar/" + postVO.getAvatar());
+        }
         //对iPage对象进行遍历，查询话题的标签
         setTopicTags(iPage);
         return iPage;
