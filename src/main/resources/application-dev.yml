@@ -5,7 +5,7 @@ web:
   domain: http://localhost
 
 shanque:
-  uploadPath: D:/shanque_community_project/uploadPath/
+  uploadPath: D:/DevSpace/Projects/shanque/uploadPath/
 
 spring:
   datasource:
